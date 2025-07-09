@@ -1,0 +1,84 @@
+<head>
+    <style>
+  body {
+    background-color: #0d0d0d;
+    color: white;
+    font-family: 'Segoe UI', sans-serif;
+    text-align: center;
+    padding: 50px;
+  }
+
+  h1, h2 {
+    color: #fff;
+  }
+
+  input, button {
+    padding: 10px;
+    margin: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    outline: none;
+  }
+
+  input {
+    background-color: #1e1e1e;
+    color: white;
+    width: 300px;
+  }
+
+  button {
+    background-color: #4a90e2;
+    color: white;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  button:hover {
+    background-color: #357ab8;
+  }
+
+  #chat {
+    text-align: left;
+    max-width: 600px;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: #1a1a1a;
+    border-radius: 10px;
+    height: 300px;
+    overflow-y: auto;
+  }
+
+  #servers-list button {
+    display: block;
+    margin: 10px auto;
+    width: 200px;
+  }
+</style>
+
+</head>
+<h2>Chat in VOIC3</h2>
+<input id="username" placeholder="Enter your name" />
+<input id="msg" placeholder="Type a message" />
+<button onclick="sendMsg()">Send</button>
+<div id="chat"></div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  const socket = io();
+  const serverName = localStorage.getItem('serverName');
+
+  document.getElementById("username").addEventListener("change", () => {
+    const user = document.getElementById("username").value;
+    socket.emit('join-server', serverName, user);
+  });
+
+  socket.on('chat-message', msg => {
+    document.getElementById("chat").innerHTML += `<div>${msg}</div>`;
+  });
+
+  function sendMsg() {
+    const msg = document.getElementById("msg").value;
+    socket.emit('chat-message', serverName, msg);
+  }
+</script>
